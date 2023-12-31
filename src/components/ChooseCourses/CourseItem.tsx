@@ -3,9 +3,9 @@ import SelectCourseDate from "./SelectCourseDate";
 import Course from "../../Types/Course";
 import { CoursesContext } from "../../CoursesContext";
 import Typography from "@mui/material/Typography";
-import { List, ListItem, Tooltip } from "@mui/material";
-import Checkbox from "@mui/material/Checkbox";
+import { IconButton, List, ListItem, Tooltip } from "@mui/material";
 import InfoIcon from "@mui/icons-material/Info";
+import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 
 type CourseItemProps = {
   course: Course;
@@ -13,42 +13,36 @@ type CourseItemProps = {
 
 const CourseItem: React.FC<CourseItemProps> = ({ course }) => {
   const coursesContext = useContext(CoursesContext);
-  const [isChecked, setIsChecked] = useState<boolean>(false);
   const [pickedDate, setPickedDate] = useState<Date | null>(null);
-  const [disableCheckButton, setDisableCheckButton] = useState<boolean>(true);
+  const [disableAddButton, setDisableAddButton] = useState<boolean>(true);
   const [explanation, setExplanation] = useState<string>("בחר תאריך");
 
   const chosenCourses = coursesContext!.chosenCourses;
-  const takenCourses = coursesContext!.takenCourses
+  const takenCourses = coursesContext!.takenCourses;
   useEffect(() => {
     let isChosen: boolean = chosenCourses.some(
       (chosenCourse) => chosenCourse.id === course.id
     );
-    let isTaken:boolean = takenCourses.some(
+    let isTaken: boolean = takenCourses.some(
       (takenCourse) => takenCourse.id === course.id
     );
     if (pickedDate === null) {
-      if (!isChosen && !isTaken ) {
-        setIsChecked(false)
+      if (!isChosen && !isTaken) {
         setExplanation("בחר תאריך");
       } else {
-        setIsChecked(true)
         setExplanation("הקורס נבחר");
-      }     
-      setDisableCheckButton(true)
-    }
-    else if (!isChosen && !isTaken ) {
-      setIsChecked(false);
-      setExplanation("")
-      setDisableCheckButton(false)
+      }
+      setDisableAddButton(true);
+    } else if (!isChosen && !isTaken) {
+      setExplanation("");
+      setDisableAddButton(false);
     } else {
-      setIsChecked(true);
       setExplanation("הקורס נבחר");
-      setDisableCheckButton(true);
+      setDisableAddButton(true);
     }
   }, [chosenCourses, takenCourses, pickedDate]);
 
-  const handleCheckboxChange = () => {
+  const handleChange = () => {
     let chosenCourse: Course = { ...course };
     chosenCourse.dates = [pickedDate!];
     coursesContext?.addChosenCourse(chosenCourse);
@@ -63,23 +57,22 @@ const CourseItem: React.FC<CourseItemProps> = ({ course }) => {
       <ListItem>
         <Tooltip title={explanation} placement="top">
           <span>
-            <Checkbox
-              checked={isChecked}
-              onChange={handleCheckboxChange}
+            <IconButton
+              onClick={handleChange}
+              disabled={disableAddButton}
               color="primary"
-              disabled={disableCheckButton}
-            />
+              sx={{ marginRight: "0.5em" }}
+            >
+              <AddShoppingCartIcon />
+            </IconButton>
           </span>
         </Tooltip>
         <Typography sx={{ fontSize: "1.1em" }} color="text.secondary">
           {course.name}
         </Typography>
       </ListItem>
-      <ListItem sx={{ marginTop: "-2em", paddingLeft: "3.5em" }}>
-        <SelectCourseDate
-          dates={course.dates}
-          setPickedDate={setPickedDate}
-        />
+      <ListItem sx={{ marginTop: "-2em", paddingLeft: "4em" }}>
+        <SelectCourseDate dates={course.dates} setPickedDate={setPickedDate} />
         <Tooltip title={course.info} placement="top">
           <InfoIcon sx={{ marginLeft: "auto", marginTop: "auto" }} />
         </Tooltip>

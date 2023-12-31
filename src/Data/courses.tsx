@@ -29,7 +29,7 @@ let courses: Course[] = [
     id: 5,
     name: "אלגו 1",
     dates: [new Date("2023-02-23")],
-    info: "",
+    info: "אין מידע",
   },
   {
     id: 6,

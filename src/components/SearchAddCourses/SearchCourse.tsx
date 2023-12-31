@@ -69,7 +69,7 @@ const SearchCourse: React.FC<RegistrationProps> = ({ setNameFilter }) => {
       id: newId,
       name: courseName,
       dates: newDates,
-      info: "",
+      info: "אין מידע",
     };
     return newCourse;
   };

@@ -6,10 +6,13 @@ import Toolbar from "@mui/material/Toolbar";
 import Box from "@mui/material/Box";
 import { Button, Typography } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
+import Alert from '@mui/material/Alert';
+import Snackbar from '@mui/material/Snackbar';
 
 const Cart: React.FC<{}> = ({}) => {
   const coursesContext = useContext(CoursesContext);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isSuccess, setIsSuccess] = useState(false);
   const [disableAddButton, setDisableAddButton] = useState<boolean>(true);
 
   const chosenCourses = coursesContext!.chosenCourses;
@@ -30,7 +33,12 @@ const Cart: React.FC<{}> = ({}) => {
     coursesContext?.clearChosenCourses();
     setTimeout(() => {
       setIsLoading(false);
+      setIsSuccess(true);
     }, 1500);
+  };
+
+  const handleCloseSnackbar = () => {
+    setIsSuccess(false);
   };
   return (
     <Box
@@ -57,6 +65,11 @@ const Cart: React.FC<{}> = ({}) => {
           </Typography>
         </Toolbar>
       </AppBar>
+      <Snackbar open={isSuccess} autoHideDuration={3000} onClose={handleCloseSnackbar}>
+        <Alert onClose={handleCloseSnackbar} severity="success">
+          נרשמת לקורסים בהצלחה
+        </Alert>
+      </Snackbar>
       <ChosenCoursesList />
       {isLoading ? (
         <CircularProgress />
