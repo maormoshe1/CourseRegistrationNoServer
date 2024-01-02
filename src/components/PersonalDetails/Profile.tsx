@@ -1,8 +1,9 @@
 import users from "../../Data/users";
+import User from "../../Types/User";
 import { List, ListItem, ListItemText, Typography } from "@mui/material";
 
 const Profile: React.FC<{}> = () => {
-  let user = users[0];
+  let user: User = users[0];
   return (
     <List>
       <ListItem sx={{ borderBottom: 1, borderColor: "divider" }}>

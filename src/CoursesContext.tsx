@@ -1,4 +1,4 @@
-import React, { createContext, useState } from "react";
+import { createContext, useState } from "react";
 import Course from "./Types/Course";
 import courses from "./Data/courses";
 
@@ -9,7 +9,7 @@ type CoursesContextType = {
   chosenCourses: Course[];
   takenCourses: Course[];
   addNewCourse: (course: Course) => void;
-  addNewDate: (newDate: Date, oldName: string) => void;
+  addNewDate: (courseName: string, courseDate:Date) => void;
   addChosenCourse: (chosenCourse: Course) => void;
   deleteChosenCourse: (id: number) => void;
   clearChosenCourses: () => void;
@@ -34,11 +34,11 @@ const CoursesProvider: React.FC<CoursesContextProviderProps> = ({
     });
   };
 
-  const addNewDate = (newDate: Date, oldName: string) => {
+  const addNewDate = (courseName: string, courseDate: Date) => {
     setAllCourses((prevAllCourses) =>
       prevAllCourses.map((course) => {
-        return course.name === oldName
-          ? { ...course, dates: [...course.dates, newDate] }
+        return course.name === courseName
+          ? { ...course, dates: [...course.dates, courseDate] }
           : course;
       })
     );

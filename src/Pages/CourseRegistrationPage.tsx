@@ -1,22 +1,26 @@
 import { useState } from "react";
 import AllCoursesList from "../components/ChooseCourses/AllCoursesList";
 import SearchCourse from "../components/SearchAddCourses/SearchCourse";
-import CartDialog from "../components/Cart/CartDailog";
-import Grid from "@mui/material/Grid";
-import { Box } from "@mui/material";
+import CartDialog from "../components/Cart/CartDialog";
+import { Box, Grid } from "@mui/material";
 
 const CourseRegistrationPage: React.FC<{}> = () => {
-  const [nameFilter, setNameFilter] = useState<string>("");
+  console.log(`render CourseRegistrationPage.tsx`);
+  const [courseName, setCourseName] = useState("");
+
   return (
     <Box sx={{ margin: "1em" }}>
       <CartDialog />
       <Grid container justifyContent={"center"}>
         <Grid item xs={4} justifyContent="center">
           <Grid item xs={12}>
-            <SearchCourse setNameFilter={setNameFilter} />
+            <SearchCourse
+              courseName={courseName}
+              setCourseName={setCourseName}
+            />
           </Grid>
           <Grid item xs={12} sx={{ marginTop: "1vh" }}>
-            <AllCoursesList nameFilter={nameFilter} />
+            <AllCoursesList courseName={courseName} />
           </Grid>
         </Grid>
       </Grid>

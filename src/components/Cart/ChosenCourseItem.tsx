@@ -1,10 +1,16 @@
-import Typography from "@mui/material/Typography";
-import Course from "../../Types/Course";
-import { Button, List, ListItem, ListItemText, Tooltip } from "@mui/material";
-import InfoIcon from "@mui/icons-material/Info";
-import DeleteIcon from "@mui/icons-material/Delete";
 import { useContext } from "react";
 import { CoursesContext } from "../../CoursesContext";
+import Course from "../../Types/Course";
+import {
+  Button,
+  List,
+  ListItem,
+  ListItemText,
+  Tooltip,
+  Typography,
+} from "@mui/material";
+import InfoIcon from "@mui/icons-material/Info";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 type ChosenCourseItemProps = {
   chosenCourse: Course;
@@ -16,8 +22,8 @@ const ChosenCourseItem: React.FC<ChosenCourseItemProps> = ({
   const coursesContext = useContext(CoursesContext);
   const date: string = chosenCourse.dates[0].toLocaleDateString();
 
-  const handleOnClick = () => {
-    coursesContext?.deleteChosenCourse(chosenCourse.id);
+  const deleteCourse = (courseId: number) => {
+    coursesContext?.deleteChosenCourse(courseId);
   };
 
   return (
@@ -28,7 +34,10 @@ const ChosenCourseItem: React.FC<ChosenCourseItemProps> = ({
       }}
     >
       <ListItem disablePadding>
-        <Button onClick={handleOnClick} sx={{ color: "black" }}>
+        <Button
+          onClick={() => deleteCourse(chosenCourse.id)}
+          sx={{ color: "black" }}
+        >
           <DeleteIcon />
         </Button>
         <ListItemText primary={chosenCourse.name} />

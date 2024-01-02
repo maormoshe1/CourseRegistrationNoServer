@@ -2,13 +2,11 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import PastTakenCoursesList from "../components/PersonalDetails/PastTakenCoursesList";
 import FutureTakenCoursesList from "../components/PersonalDetails/FutureTakenCourseList";
-import Box from "@mui/material/Box";
-import Tab from "@mui/material/Tab";
+import Profile from "../components/PersonalDetails/Profile";
+import { Box, Tab, Grid, IconButton } from "@mui/material";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
-import { Grid, IconButton } from "@mui/material";
-import Profile from "../components/PersonalDetails/Profile";
 import EditCalendarIcon from "@mui/icons-material/EditCalendar";
 
 const ProfilePage: React.FC<{}> = () => {
@@ -16,7 +14,7 @@ const ProfilePage: React.FC<{}> = () => {
 
   let navigate = useNavigate();
 
-  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
+  const switchTabs = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
   };
 
@@ -37,7 +35,7 @@ const ProfilePage: React.FC<{}> = () => {
               <Grid item xs={12}>
                 <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
                   <TabList
-                    onChange={handleChange}
+                    onChange={switchTabs}
                     aria-label="lab API tabs example"
                     sx={{ fontSize: "1em" }}
                   >

@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useContext } from "react";
+import { useState, useContext } from "react";
+import { CoursesContext } from "../../CoursesContext";
 import SelectCourseDate from "./SelectCourseDate";
 import Course from "../../Types/Course";
-import { CoursesContext } from "../../CoursesContext";
-import Typography from "@mui/material/Typography";
-import { IconButton, List, ListItem, Tooltip } from "@mui/material";
+import { IconButton, List, ListItem, Tooltip, Typography } from "@mui/material";
 import InfoIcon from "@mui/icons-material/Info";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 
 type CourseItemProps = {
   course: Course;
@@ -14,39 +14,37 @@ type CourseItemProps = {
 const CourseItem: React.FC<CourseItemProps> = ({ course }) => {
   const coursesContext = useContext(CoursesContext);
   const [pickedDate, setPickedDate] = useState<Date | null>(null);
-  const [disableAddButton, setDisableAddButton] = useState<boolean>(true);
-  const [explanation, setExplanation] = useState<string>("בחר תאריך");
+  let explanation: string = "";
+  let disableAddButton = true;
 
-  const chosenCourses = coursesContext!.chosenCourses;
-  const takenCourses = coursesContext!.takenCourses;
-  useEffect(() => {
-    let isChosen: boolean = chosenCourses.some(
+  const handleExplanationAndDisable = () => {
+    const isChosen: boolean = coursesContext!.chosenCourses.some(
       (chosenCourse) => chosenCourse.id === course.id
     );
-    let isTaken: boolean = takenCourses.some(
+    const isTaken: boolean = coursesContext!.takenCourses.some(
       (takenCourse) => takenCourse.id === course.id
     );
     if (pickedDate === null) {
       if (!isChosen && !isTaken) {
-        setExplanation("בחר תאריך");
+        explanation = "בחר תאריך";
       } else {
-        setExplanation("הקורס נבחר");
+        explanation = "הקורס נבחר";
       }
-      setDisableAddButton(true);
     } else if (!isChosen && !isTaken) {
-      setExplanation("");
-      setDisableAddButton(false);
+      disableAddButton = false;
     } else {
-      setExplanation("הקורס נבחר");
-      setDisableAddButton(true);
+      explanation = "הקורס נבחר";
     }
-  }, [chosenCourses, takenCourses, pickedDate]);
+  };
 
-  const handleChange = () => {
+  const addCourseToCart = (course:Course, date:Date) => {
     let chosenCourse: Course = { ...course };
-    chosenCourse.dates = [pickedDate!];
+    chosenCourse.dates = [date];
     coursesContext?.addChosenCourse(chosenCourse);
   };
+
+  handleExplanationAndDisable();
+
   return (
     <List
       sx={{
@@ -58,12 +56,16 @@ const CourseItem: React.FC<CourseItemProps> = ({ course }) => {
         <Tooltip title={explanation} placement="top">
           <span>
             <IconButton
-              onClick={handleChange}
+              onClick={() => addCourseToCart(course, pickedDate!)}
               disabled={disableAddButton}
               color="primary"
               sx={{ marginRight: "0.5em" }}
             >
-              <AddShoppingCartIcon />
+              {explanation === "הקורס נבחר" ? (
+                <ShoppingCartIcon />
+              ) : (
+                <AddShoppingCartIcon />
+              )}
             </IconButton>
           </span>
         </Tooltip>

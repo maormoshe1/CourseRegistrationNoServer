@@ -1,11 +1,9 @@
 import { useContext } from "react";
 import { CoursesContext } from "../../CoursesContext";
 import FutureTakenCourseItem from "./FutureTakenCourseItem";
-import dayjs from "dayjs";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import Box from "@mui/material/Box";
 import Course from "../../Types/Course";
+import dayjs from "dayjs";
+import { List, ListItem, Box, Typography } from "@mui/material";
 
 const FutureTakenCoursesList: React.FC<{}> = () => {
   const takenCourses: Course[] = useContext(CoursesContext)!.takenCourses;
@@ -21,15 +19,23 @@ const FutureTakenCoursesList: React.FC<{}> = () => {
       }}
     >
       <List style={{ maxHeight: "28em", overflow: "auto" }}>
-        {futureTakenCourses.map((futureTakenCourse) => (
-          <ListItem
-            sx={{ borderBottom: 1, borderColor: "divider" }}
-            key={futureTakenCourse.name}
-            disablePadding
-          >
-            <FutureTakenCourseItem furureTakenCourse={futureTakenCourse} />
-          </ListItem>
-        ))}
+        {futureTakenCourses.length === 0 ? (
+          <Box textAlign="center" py={10}>
+            <Typography variant="body2" color="textSecondary">
+              אין קורסים להצגה
+            </Typography>
+          </Box>
+        ) : (
+          futureTakenCourses.map((futureTakenCourse) => (
+            <ListItem
+              sx={{ borderBottom: 1, borderColor: "divider" }}
+              key={futureTakenCourse.name}
+              disablePadding
+            >
+              <FutureTakenCourseItem furureTakenCourse={futureTakenCourse} />
+            </ListItem>
+          ))
+        )}
       </List>
     </Box>
   );

@@ -1,45 +1,43 @@
-import { useContext, useState, useEffect } from "react";
-import ChosenCoursesList from "./ChosenCoursesList";
+import { useContext, useState } from "react";
 import { CoursesContext } from "../../CoursesContext";
-import AppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import Box from "@mui/material/Box";
-import { Button, Typography } from "@mui/material";
-import CircularProgress from "@mui/material/CircularProgress";
-import Alert from '@mui/material/Alert';
-import Snackbar from '@mui/material/Snackbar';
+import ChosenCoursesList from "./ChosenCoursesList";
+import Course from "../../Types/Course";
+import {
+  AppBar,
+  Toolbar,
+  Box,
+  Button,
+  Typography,
+  CircularProgress,
+  Alert,
+  Snackbar,
+} from "@mui/material";
 
 const Cart: React.FC<{}> = ({}) => {
+  console.log(`render cart.tsx`);
   const coursesContext = useContext(CoursesContext);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  const [disableAddButton, setDisableAddButton] = useState<boolean>(true);
 
-  const chosenCourses = coursesContext!.chosenCourses;
+  const chosenCourses: Course[] = coursesContext!.chosenCourses;
+  const disableAddButton: boolean = chosenCourses.length === 0;
 
-  useEffect(() => {
-    if (chosenCourses.length === 0) {
-      setDisableAddButton(true);
-    } else {
-      setDisableAddButton(false);
-    }
-  }, [chosenCourses]);
-
-  const handleClick = () => {
+  const registerForCourses = () => {
     chosenCourses.forEach((chosenCourse) =>
       coursesContext?.addTakenCourse(chosenCourse)
     );
     setIsLoading(true);
-    coursesContext?.clearChosenCourses();
     setTimeout(() => {
+      coursesContext?.clearChosenCourses();
       setIsLoading(false);
       setIsSuccess(true);
     }, 1500);
   };
 
-  const handleCloseSnackbar = () => {
+  const closeSnackbar = () => {
     setIsSuccess(false);
   };
+
   return (
     <Box
       sx={{
@@ -65,9 +63,15 @@ const Cart: React.FC<{}> = ({}) => {
           </Typography>
         </Toolbar>
       </AppBar>
-      <Snackbar open={isSuccess} autoHideDuration={3000} onClose={handleCloseSnackbar}>
-        <Alert onClose={handleCloseSnackbar} severity="success">
-          נרשמת לקורסים בהצלחה
+      <Snackbar
+        open={isSuccess}
+        autoHideDuration={3000}
+        onClose={closeSnackbar}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        sx={{ position: "absolute", paddingTop: "5vh", width: "100%" }}
+      >
+        <Alert onClose={closeSnackbar} severity="success">
+          נרשמת בהצלחה
         </Alert>
       </Snackbar>
       <ChosenCoursesList />
@@ -76,7 +80,7 @@ const Cart: React.FC<{}> = ({}) => {
       ) : (
         <Button
           variant="contained"
-          onClick={handleClick}
+          onClick={registerForCourses}
           sx={{ marginTop: "1vh", marginBottom: "1vh", width: "5em" }}
           disabled={disableAddButton}
         >

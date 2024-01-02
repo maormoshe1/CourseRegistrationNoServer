@@ -1,8 +1,11 @@
-import { useState, useEffect } from "react";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
+import { useState } from "react";
+import {
+  InputLabel,
+  MenuItem,
+  FormControl,
+  Select,
+  SelectChangeEvent,
+} from "@mui/material";
 
 type SelectCourseDateProps = {
   dates: Date[];
@@ -13,14 +16,9 @@ const SelectCourseDate: React.FC<SelectCourseDateProps> = ({
   dates,
   setPickedDate,
 }) => {
-  const [date, setDate] = useState<string>("");
-  const [datesOptions, setDatesOptions] = useState<Date[]>(dates);
+  const [date, setDate] = useState("");
 
-  useEffect(() => {
-    setDatesOptions(dates);
-  }, [dates]);
-
-  const handleChange = (event: SelectChangeEvent) => {
+  const selectDate = (event: SelectChangeEvent) => {
     let date: string = event.target.value;
     setDate(date);
     if (date === "") {
@@ -39,13 +37,13 @@ const SelectCourseDate: React.FC<SelectCourseDateProps> = ({
           labelId="demo-simple-select-standard-label"
           id="demo-simple-select-standard"
           value={date}
-          onChange={handleChange}
+          onChange={selectDate}
           label="Date"
         >
           <MenuItem value="">
             <em>---</em>
           </MenuItem>
-          {datesOptions.map((dateOption, key) => {
+          {dates.map((dateOption, key) => {
             let dateString = dateOption.toLocaleDateString();
             return (
               <MenuItem key={key} value={dateString}>

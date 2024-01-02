@@ -1,18 +1,19 @@
-import React from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import AppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import IconButton from "@mui/material/IconButton";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  IconButton,
+  Switch,
+  FormControlLabel,
+  FormGroup,
+  Box,
+} from "@mui/material";
 import AccountCircle from "@mui/icons-material/AccountCircle";
-import Switch from "@mui/material/Switch";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormGroup from "@mui/material/FormGroup";
-import Box from "@mui/material/Box";
 
-
-export default function MenuAppBar() {
-  const [auth, setAuth] = React.useState<boolean>(false);
+const MenuAppBar: React.FC<{}> = ({}) => {
+  const [auth, setAuth] = useState(false);
 
   let navigate = useNavigate();
 
@@ -67,4 +68,6 @@ export default function MenuAppBar() {
       </AppBar>
     </Box>
   );
-}
+};
+
+export default MenuAppBar;

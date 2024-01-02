@@ -1,56 +1,36 @@
-import { useState, ChangeEvent, useContext, useEffect } from "react";
-import Course from "../../Types/Course";
+import { useState, ChangeEvent, useContext } from "react";
 import { CoursesContext } from "../../CoursesContext";
+import Course from "../../Types/Course";
 import { Dayjs } from "dayjs";
 import "dayjs/locale/he";
-import TextField from "@mui/material/TextField";
-import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
-import Typography from "@mui/material/Typography";
+import {
+  TextField,
+  Card,
+  CardActions,
+  CardContent,
+  Typography,
+  Button,
+  Tooltip,
+  Box,
+} from "@mui/material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import Button from "@mui/material/Button";
-import Tooltip from "@mui/material/Tooltip";
-import Box from "@mui/material/Box";
+import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 
 type RegistrationProps = {
-  setNameFilter: (nameFilter: string) => void;
+  courseName: string;
+  setCourseName: (courseName: string) => void;
 };
 
-const SearchCourse: React.FC<RegistrationProps> = ({ setNameFilter }) => {
+const SearchCourse: React.FC<RegistrationProps> = ({
+  courseName,
+  setCourseName,
+}) => {
   const coursesContext = useContext(CoursesContext);
-  const [courseName, setCourseName] = useState<string>("");
   const [courseDate, setCourseDate] = useState<Dayjs | null>(null);
-  const [disableAddButton, setDisableAddButton] = useState<boolean>(true);
-  const [explanation, setExplanation] = useState<string>("מלא את השדות");
-
   const allCourses: Course[] = coursesContext!.allCourses;
-  useEffect(() => {
-    setNameFilter(courseName);
-  }, [allCourses]);
 
-  useEffect(() => {
-    setDisableAddButton(true);
-    if (courseName === "") {
-      setExplanation("מלא את השדות");
-    } else if (!courseDate?.isValid()) {
-      setExplanation("התאריך אינו חוקי");
-    } else if (findCourseByName(courseName)) {
-      let inputDate: Date = courseDate.toDate();
-      let dates: Date[] = findCourseByName(courseName)!.dates;
-      if (isDateInArray(inputDate, dates)) {
-        setExplanation("התאריך קיים");
-      } else {
-        setExplanation("");
-        setDisableAddButton(false);
-      }
-    } else {
-      setExplanation("");
-      setDisableAddButton(false);
-    }
-  }, [courseDate, courseName]);
+  let explanation: string = "";
+  let disableAddButton = true;
 
   const isDateInArray = (targetDate: Date, dateArray: Date[]) => {
     return dateArray.find(
@@ -62,9 +42,27 @@ const SearchCourse: React.FC<RegistrationProps> = ({ setNameFilter }) => {
     return allCourses.find((course) => course.name === name);
   };
 
-  const createCourse = () => {
+  const handleExplanationAndDisable = () => {
+    if (courseName === "") {
+      explanation = "מלא את השדות";
+    } else if (!courseDate?.isValid()) {
+      explanation = "התאריך אינו חוקי";
+    } else if (findCourseByName(courseName)) {
+      let inputDate: Date = courseDate.toDate();
+      let dates: Date[] = findCourseByName(courseName)!.dates;
+      if (isDateInArray(inputDate, dates)) {
+        explanation = "התאריך קיים";
+      } else {
+        disableAddButton = false;
+      }
+    } else {
+      disableAddButton = false;
+    }
+  };
+
+  const createCourse = (courseName: string, courseDate: Date) => {
     let newId: number = allCourses.length + 1;
-    let newDates: Date[] = [courseDate!.toDate()];
+    let newDates: Date[] = [courseDate];
     let newCourse: Course = {
       id: newId,
       name: courseName,
@@ -77,23 +75,23 @@ const SearchCourse: React.FC<RegistrationProps> = ({ setNameFilter }) => {
   const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {
     let name: string = event.target.value;
     setCourseName(name);
-    setNameFilter(name);
   };
 
   const handleDateChange = (date: Dayjs | null) => {
     setCourseDate(date);
   };
 
-  const handleClick = () => {
+  const addCourseToList = (courseName: string, courseDate: Date) => {
     if (findCourseByName(courseName)) {
-      let newDate: Date = courseDate!.toDate();
-      coursesContext?.addNewDate(newDate, courseName);
+      coursesContext?.addNewDate(courseName, courseDate);
     } else {
-      let newCourse: Course = createCourse();
+      let newCourse: Course = createCourse(courseName, courseDate);
       coursesContext?.addNewCourse(newCourse);
     }
-    setDisableAddButton(true);
+    disableAddButton = true;
   };
+
+  handleExplanationAndDisable();
 
   return (
     <Card>
@@ -134,7 +132,7 @@ const SearchCourse: React.FC<RegistrationProps> = ({ setNameFilter }) => {
           <span>
             <Button
               variant="contained"
-              onClick={handleClick}
+              onClick={() => addCourseToList(courseName, courseDate!.toDate())}
               disabled={disableAddButton}
             >
               הוסף

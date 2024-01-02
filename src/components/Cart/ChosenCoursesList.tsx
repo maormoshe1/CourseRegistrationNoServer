@@ -1,12 +1,11 @@
 import { useContext } from "react";
 import { CoursesContext } from "../../CoursesContext";
 import ChosenCourseItem from "./ChosenCourseItem";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import Box from "@mui/material/Box";
+import Course from "../../Types/Course";
+import { List, ListItem, Box, Typography } from "@mui/material";
 
 const ChosenCoursesList: React.FC<{}> = ({}) => {
-  const coursesContext = useContext(CoursesContext);
+  const chosenCourses: Course[] = useContext(CoursesContext)!.chosenCourses;
   return (
     <Box
       sx={{
@@ -15,15 +14,23 @@ const ChosenCoursesList: React.FC<{}> = ({}) => {
       }}
     >
       <List style={{ minHeight: "20em", maxHeight: "20em", overflow: "auto" }}>
-        {coursesContext?.chosenCourses.map((chosenCourse) => (
-          <ListItem
-            sx={{ borderBottom: 1, borderColor: "divider" }}
-            key={chosenCourse.name}
-            disablePadding
-          >
-            <ChosenCourseItem chosenCourse={chosenCourse} />
-          </ListItem>
-        ))}
+        {chosenCourses?.length === 0 ? (
+          <Box textAlign="center" py={10}>
+            <Typography variant="body2" color="textSecondary">
+              בחר קורסים מהרשימה
+            </Typography>
+          </Box>
+        ) : (
+          chosenCourses.map((chosenCourse) => (
+            <ListItem
+              sx={{ borderBottom: 1, borderColor: "divider" }}
+              key={chosenCourse.name}
+              disablePadding
+            >
+              <ChosenCourseItem chosenCourse={chosenCourse} />
+            </ListItem>
+          ))
+        )}
       </List>
     </Box>
   );

@@ -1,8 +1,19 @@
-import { useContext } from "react";
-import Course from "../../Types/Course";
+import { useContext, useState } from "react";
 import { CoursesContext } from "../../CoursesContext";
-import Typography from "@mui/material/Typography";
-import { Button, List, ListItem, ListItemText, Tooltip } from "@mui/material";
+import Course from "../../Types/Course";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  List,
+  ListItem,
+  ListItemText,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import InfoIcon from "@mui/icons-material/Info";
 import DeleteIcon from "@mui/icons-material/Delete";
 
@@ -15,33 +26,67 @@ const FutureTakenCourseItem: React.FC<FutureTakenCourseItemProps> = ({
 }) => {
   const date: string = furureTakenCourse.dates[0].toLocaleDateString();
   const deleteTakenCourse = useContext(CoursesContext)!.deleteTakenCourse;
+  const [open, setOpen] = useState(false);
 
-  const handleOnClick = () => {
-    deleteTakenCourse(furureTakenCourse.id);
+  const openModal = () => {
+    setOpen(true);
+  };
+
+  const closeModal = () => {
+    setOpen(false);
+  };
+
+  const deleteCourse = (courseId: number) => {
+    deleteTakenCourse(courseId);
   };
 
   return (
-    <List
-      sx={{
-        width: "100%",
-        maxHeight: "10em",
-      }}
-    >
-      <ListItem disablePadding>
-        <Button onClick={handleOnClick} sx={{ color: "black" }}>
-          <DeleteIcon />
-        </Button>
-        <ListItemText primary={furureTakenCourse.name} />
-      </ListItem>
-      <ListItem sx={{ paddingLeft: "4em" }}>
-        <Typography sx={{ fontSize: "1em" }} color="text.secondary">
-          {date}
-        </Typography>
-        <Tooltip title={furureTakenCourse.info} placement="top">
-          <InfoIcon sx={{ marginLeft: "auto", marginTop: "auto" }} />
-        </Tooltip>
-      </ListItem>
-    </List>
+    <>
+      <List
+        sx={{
+          width: "100%",
+          maxHeight: "10em",
+        }}
+      >
+        <ListItem disablePadding>
+          <Button onClick={openModal} sx={{ color: "black" }}>
+            <DeleteIcon />
+          </Button>
+          <ListItemText primary={furureTakenCourse.name} />
+        </ListItem>
+        <ListItem sx={{ paddingLeft: "4em" }}>
+          <Typography sx={{ fontSize: "1em" }} color="text.secondary">
+            {date}
+          </Typography>
+          <Tooltip title={furureTakenCourse.info} placement="top">
+            <InfoIcon sx={{ marginLeft: "auto", marginTop: "auto" }} />
+          </Tooltip>
+        </ListItem>
+      </List>
+      <Dialog
+        open={open}
+        onClose={closeModal}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          האם אתה בטוח שאתה רוצה למחוק את הקורס?
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            לאחר המחיקה תוכל להרשם אליו מחדש דרך רשימת הקורסים במידה ויישאר מקום
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => deleteCourse(furureTakenCourse.id)}>
+            מחק
+          </Button>
+          <Button onClick={closeModal} autoFocus>
+            בטל
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
   );
 };
 

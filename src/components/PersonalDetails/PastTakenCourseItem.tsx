@@ -1,6 +1,11 @@
 import Course from "../../Types/Course";
-import Typography from "@mui/material/Typography";
-import { List, ListItem, ListItemText, Tooltip } from "@mui/material";
+import {
+  List,
+  ListItem,
+  ListItemText,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import InfoIcon from "@mui/icons-material/Info";
 
 type PastTakenCourseItemProps = {
