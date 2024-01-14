@@ -1,27 +1,29 @@
-import users from "../../Data/users";
 import User from "../../Types/User";
 import { List, ListItem, ListItemText, Typography } from "@mui/material";
 
-const Profile: React.FC<{}> = () => {
-  let user: User = users[0];
+type ProfilrProps = {
+  user: User|null
+}
+
+const Profile: React.FC<ProfilrProps> = ({user}) => {
   return (
     <List>
       <ListItem sx={{ borderBottom: 1, borderColor: "divider" }}>
         <ListItemText
           primary="שם פרטי:"
-          secondary={<Typography variant="h6">{user.firstName}</Typography>}
+          secondary={<Typography variant="h6">{user?.firstName}</Typography>}
         />
       </ListItem>
       <ListItem sx={{ borderBottom: 1, borderColor: "divider" }}>
         <ListItemText
           primary="שם משפחה:"
-          secondary={<Typography variant="h6">{user.lastName}</Typography>}
+          secondary={<Typography variant="h6">{user?.lastName}</Typography>}
         />
       </ListItem>
       <ListItem sx={{ borderBottom: 1, borderColor: "divider" }}>
         <ListItemText
           primary={'דוא"ל:'}
-          secondary={<Typography variant="h6">{user.email}</Typography>}
+          secondary={<Typography variant="h6">{user?.email}</Typography>}
         />
       </ListItem>
       <ListItem sx={{ borderBottom: 1, borderColor: "divider" }}>
@@ -29,7 +31,7 @@ const Profile: React.FC<{}> = () => {
           primary={"תאריך לידה:"}
           secondary={
             <Typography variant="h6">
-              {user.birthday.toLocaleDateString()}
+              {user ? new Date(user.birthday).toLocaleDateString() : ""}
             </Typography>
           }
         />
@@ -37,7 +39,7 @@ const Profile: React.FC<{}> = () => {
       <ListItem sx={{ borderBottom: 1, borderColor: "divider" }}>
         <ListItemText
           primary={"טלפון נייד:"}
-          secondary={<Typography variant="h6">{user.phoneNumber}</Typography>}
+          secondary={<Typography variant="h6">{user?.phoneNumber}</Typography>}
         />
       </ListItem>
     </List>

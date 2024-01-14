@@ -23,11 +23,11 @@ const Cart: React.FC<{}> = ({}) => {
   const disableAddButton: boolean = chosenCourses.length === 0;
 
   const registerForCourses = () => {
-    chosenCourses.forEach((chosenCourse) =>
-      coursesContext?.addTakenCourse(chosenCourse)
-    );
     setIsLoading(true);
     setTimeout(() => {
+      chosenCourses.forEach((chosenCourse) =>
+        coursesContext?.addTakenCourse(chosenCourse)
+      );
       coursesContext?.clearChosenCourses();
       setIsLoading(false);
       setIsSuccess(true);

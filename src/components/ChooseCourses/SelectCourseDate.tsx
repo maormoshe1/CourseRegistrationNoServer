@@ -44,7 +44,7 @@ const SelectCourseDate: React.FC<SelectCourseDateProps> = ({
             <em>---</em>
           </MenuItem>
           {dates.map((dateOption, key) => {
-            let dateString = dateOption.toLocaleDateString();
+            let dateString  = new Date(dateOption).toLocaleDateString()
             return (
               <MenuItem key={key} value={dateString}>
                 {dateString}

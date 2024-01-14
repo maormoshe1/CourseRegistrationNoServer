@@ -24,7 +24,7 @@ type FutureTakenCourseItemProps = {
 const FutureTakenCourseItem: React.FC<FutureTakenCourseItemProps> = ({
   furureTakenCourse,
 }) => {
-  const date: string = furureTakenCourse.dates[0].toLocaleDateString();
+  const date: string = new Date(furureTakenCourse.dates[0]).toLocaleDateString();
   const deleteTakenCourse = useContext(CoursesContext)!.deleteTakenCourse;
   const [open, setOpen] = useState(false);
 
@@ -38,6 +38,7 @@ const FutureTakenCourseItem: React.FC<FutureTakenCourseItemProps> = ({
 
   const deleteCourse = (courseId: number) => {
     deleteTakenCourse(courseId);
+    closeModal()
   };
 
   return (
