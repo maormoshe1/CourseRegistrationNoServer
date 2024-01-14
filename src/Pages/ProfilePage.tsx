@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import PastTakenCoursesList from "../components/PersonalDetails/PastTakenCoursesList";
 import FutureTakenCoursesList from "../components/PersonalDetails/FutureTakenCourseList";
@@ -8,9 +8,21 @@ import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import EditCalendarIcon from "@mui/icons-material/EditCalendar";
+import User from "../Types/User";
+import APIRequest from "../APIRequests";
 
 const ProfilePage: React.FC<{}> = () => {
   const [value, setValue] = useState("1");
+  const [user, setUser] = useState<User | null>(null);
+  useEffect(() => {
+    APIRequest.getUser()
+      .then((result) => {
+        setUser(result);
+      })
+      .catch((error) => {
+        console.error("Error:", error.message);
+      });
+  }, []);
 
   let navigate = useNavigate();
 
@@ -59,7 +71,7 @@ const ProfilePage: React.FC<{}> = () => {
               </Grid>
               <Grid item xs={12} sx={{ minHeight: "32em" }}>
                 <TabPanel value="1">
-                  <Profile />
+                  <Profile user={user} />
                 </TabPanel>
                 <TabPanel value="2">
                   <PastTakenCoursesList />

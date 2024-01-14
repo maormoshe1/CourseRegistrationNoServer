@@ -15,7 +15,7 @@ type PastTakenCourseItemProps = {
 const PastTakenCourseItem: React.FC<PastTakenCourseItemProps> = ({
   PastTakenCourse,
 }) => {
-  const date: string = PastTakenCourse.dates[0].toLocaleDateString();
+  const date: string = new Date(PastTakenCourse.dates[0]).toLocaleDateString();
   return (
     <List
       sx={{

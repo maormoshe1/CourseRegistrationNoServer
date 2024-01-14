@@ -34,7 +34,8 @@ const SearchCourse: React.FC<RegistrationProps> = ({
 
   const isDateInArray = (targetDate: Date, dateArray: Date[]) => {
     return dateArray.find(
-      (date) => date.toLocaleDateString() === targetDate.toLocaleDateString()
+      (date) =>
+        new Date(date).toLocaleDateString() === targetDate.toLocaleDateString()
     );
   };
 
@@ -60,18 +61,6 @@ const SearchCourse: React.FC<RegistrationProps> = ({
     }
   };
 
-  const createCourse = (courseName: string, courseDate: Date) => {
-    let newId: number = allCourses.length + 1;
-    let newDates: Date[] = [courseDate];
-    let newCourse: Course = {
-      id: newId,
-      name: courseName,
-      dates: newDates,
-      info: "אין מידע",
-    };
-    return newCourse;
-  };
-
   const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {
     let name: string = event.target.value;
     setCourseName(name);
@@ -82,11 +71,11 @@ const SearchCourse: React.FC<RegistrationProps> = ({
   };
 
   const addCourseToList = (courseName: string, courseDate: Date) => {
-    if (findCourseByName(courseName)) {
-      coursesContext?.addNewDate(courseName, courseDate);
+    const course: Course | undefined = findCourseByName(courseName);
+    if (course) {
+      coursesContext?.addNewDate(course.id, courseDate);
     } else {
-      let newCourse: Course = createCourse(courseName, courseDate);
-      coursesContext?.addNewCourse(newCourse);
+      coursesContext?.addNewCourse(courseName, courseDate, "אין מידע");
     }
     disableAddButton = true;
   };

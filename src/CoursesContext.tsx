@@ -1,6 +1,6 @@
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect } from "react";
 import Course from "./Types/Course";
-import courses from "./Data/courses";
+import APIRequests from "./APIRequests";
 
 export const CoursesContext = createContext<CoursesContextType | null>(null);
 
@@ -8,8 +8,8 @@ type CoursesContextType = {
   allCourses: Course[];
   chosenCourses: Course[];
   takenCourses: Course[];
-  addNewCourse: (course: Course) => void;
-  addNewDate: (courseName: string, courseDate:Date) => void;
+  addNewCourse: (courseName: string, courseDate: Date, info: string) => void;
+  addNewDate: (id: number, courseDate: Date) => void;
   addChosenCourse: (chosenCourse: Course) => void;
   deleteChosenCourse: (id: number) => void;
   clearChosenCourses: () => void;
@@ -24,24 +24,69 @@ type CoursesContextProviderProps = {
 const CoursesProvider: React.FC<CoursesContextProviderProps> = ({
   children,
 }) => {
-  const [allCourses, setAllCourses] = useState<Course[]>(courses);
+  const [allCourses, setAllCourses] = useState<Course[]>([]);
   const [chosenCourses, setChosenCourses] = useState<Course[]>([]);
   const [takenCourses, setTakenCourses] = useState<Course[]>([]);
 
-  const addNewCourse = (newCourse: Course) => {
+  useEffect(() => {
+    APIRequests.getAllCourses()
+      .then((result) => {
+        setAllCourses(result);
+      })
+      .catch((error) => {
+        console.error("Error:", error.message);
+      });
+  }, []);
+
+  useEffect(() => {
+    APIRequests.getTakenCourses()
+      .then((result) => {
+        setTakenCourses(result);
+      })
+      .catch((error) => {
+        console.error("Error:", error.message);
+      });
+  }, []);
+
+  const addNewCourseLocal = (id: number, courseName: string, courseDate: Date, info: string) => {
+    let newDates: Date[] = [courseDate];
+    let newCourse: Course = {
+      id: id,
+      name: courseName,
+      dates: newDates,
+      info: info,
+    };
     setAllCourses((prevAllCourses) => {
       return [...prevAllCourses, newCourse];
     });
   };
 
-  const addNewDate = (courseName: string, courseDate: Date) => {
+  const addNewDateLocal = (id: number, courseDate: Date) => {
     setAllCourses((prevAllCourses) =>
       prevAllCourses.map((course) => {
-        return course.name === courseName
+        return course.id === id
           ? { ...course, dates: [...course.dates, courseDate] }
           : course;
       })
     );
+  };
+
+  const addTakenCourseLocal = (takenCourse: Course) => {
+    setTakenCourses((prevTakenCourses) => [...prevTakenCourses, takenCourse]);
+  };
+
+  const deleteTakenCourseLocal = (id: number) => {
+    setTakenCourses((prevTakenCourses) =>
+      prevTakenCourses.filter((takenCourse) => takenCourse.id !== id)
+    );
+  };
+
+  const addNewCourse = (courseName: string, courseDate: Date, info: string) => {
+    APIRequests.postNewCourse(courseName, courseDate, info, addNewCourseLocal);
+  };
+
+  const addNewDate = (id: number, courseDate: Date) => {
+    APIRequests.postNewDate(id, courseDate, addNewDateLocal);
   };
 
   const addChosenCourse = (chosenCourse: Course) => {
@@ -61,13 +106,11 @@ const CoursesProvider: React.FC<CoursesContextProviderProps> = ({
   };
 
   const addTakenCourse = (takenCourse: Course) => {
-    setTakenCourses((prevTakenCourses) => [...prevTakenCourses, takenCourse]);
+    APIRequests.postTakenCourse(takenCourse, addTakenCourseLocal);
   };
 
   const deleteTakenCourse = (id: number) => {
-    setTakenCourses((prevTakenCourses) =>
-      prevTakenCourses.filter((takenCourse) => takenCourse.id !== id)
-    );
+    APIRequests.deleteTakenCourse(id, deleteTakenCourseLocal);
   };
 
   return (
